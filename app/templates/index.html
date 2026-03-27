@@ -2,47 +2,254 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo App</title>
     <style>
-        body { font-family: sans-serif; max-width: 600px; margin: 60px auto; padding: 0 20px; background: #f5f5f5; }
-        h1 { font-size: 1.5rem; margin-bottom: 20px; }
-        .input-row { display: flex; gap: 8px; margin-bottom: 24px; }
-        input[type="text"] { flex: 1; padding: 10px; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; }
-        button { padding: 10px 16px; cursor: pointer; border: none; border-radius: 4px; font-size: 0.9rem; }
-        .btn-add { background: #333; color: white; }
-        .todo-item { display: flex; align-items: center; gap: 10px; background: white; padding: 12px; border-radius: 4px; margin-bottom: 8px; }
-        .todo-text { flex: 1; }
-        .todo-text.done { text-decoration: line-through; color: #aaa; }
-        .btn-toggle { background: #e8f5e9; color: #2e7d32; }
-        .btn-delete { background: #fdecea; color: #c62828; }
-        .time { font-size: 0.75rem; color: #999; }
-        .empty { color: #999; text-align: center; margin-top: 40px; }
+        :root {
+            --bg-start: #0f172a;
+            --bg-end: #1e293b;
+            --card: rgba(255, 255, 255, 0.1);
+            --line: rgba(255, 255, 255, 0.2);
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --primary: #22c55e;
+            --primary-hover: #16a34a;
+            --danger: #f87171;
+            --danger-hover: #ef4444;
+            --task-bg: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 760px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+            padding: 24px;
+        }
+
+        .top {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: end;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            letter-spacing: 0.4px;
+        }
+
+        .subtitle {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .stats {
+            display: flex;
+            gap: 10px;
+            font-size: 0.85rem;
+        }
+
+        .pill {
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 6px 10px;
+            color: var(--muted);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            padding: 12px 14px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        input[type="text"]::placeholder {
+            color: #aab6c7;
+        }
+
+        input[type="text"]:focus {
+            border-color: rgba(34, 197, 94, 0.75);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+        }
+
+        button {
+            border: none;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.18s ease;
+        }
+
+        .btn-add {
+            background: var(--primary);
+            color: #052e16;
+            font-weight: 700;
+            min-width: 92px;
+        }
+
+        .btn-add:hover {
+            background: var(--primary-hover);
+            color: #ecfdf5;
+        }
+
+        .todo-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .todo-item {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto;
+            gap: 10px;
+            align-items: center;
+            background: var(--task-bg);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 11px 12px;
+        }
+
+        .todo-text {
+            font-size: 0.96rem;
+            line-height: 1.35;
+            word-break: break-word;
+        }
+
+        .todo-text.done {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+
+        .time {
+            font-size: 0.75rem;
+            color: #cbd5e1;
+        }
+
+        .btn-toggle {
+            background: rgba(74, 222, 128, 0.2);
+            color: #bbf7d0;
+        }
+
+        .btn-toggle:hover {
+            background: rgba(74, 222, 128, 0.35);
+        }
+
+        .btn-delete {
+            background: rgba(248, 113, 113, 0.2);
+            color: #fecaca;
+        }
+
+        .btn-delete:hover {
+            background: rgba(248, 113, 113, 0.4);
+        }
+
+        .empty {
+            margin: 18px 0 4px;
+            border: 1px dashed var(--line);
+            border-radius: 12px;
+            padding: 28px 14px;
+            text-align: center;
+            color: var(--muted);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        @media (max-width: 640px) {
+            .app {
+                padding: 18px;
+            }
+
+            .todo-item {
+                grid-template-columns: 1fr auto auto;
+            }
+
+            .time {
+                grid-column: 1 / -1;
+                margin-top: -2px;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Yapılacaklar</h1>
+    <main class="app">
+        <div class="top">
+            <div>
+                <h1>Yapılacaklar</h1>
+                <p class="subtitle">Gorevlerini hizli bir sekilde ekle, tamamla ve temizle.</p>
+            </div>
+            <div class="stats">
+                <span class="pill" id="totalCount">Toplam: 0</span>
+                <span class="pill" id="doneCount">Biten: 0</span>
+            </div>
+        </div>
 
-    <div class="input-row">
-        <input type="text" id="todoInput" placeholder="Yeni görev..." />
-        <button class="btn-add" onclick="addTodo()">Ekle</button>
-    </div>
+        <div class="input-row">
+            <input type="text" id="todoInput" placeholder="Yeni gorev yaz..." />
+            <button class="btn-add" onclick="addTodo()">Ekle</button>
+        </div>
 
-    <div id="todoList"></div>
+        <div id="todoList" class="todo-list"></div>
+    </main>
 
     <script>
+        function updateStats(todos) {
+            const total = todos.length;
+            const done = todos.filter(t => t.done).length;
+            document.getElementById("totalCount").textContent = `Toplam: ${total}`;
+            document.getElementById("doneCount").textContent = `Biten: ${done}`;
+        }
+
         async function load() {
             const res = await fetch("/todos");
             const todos = await res.json();
             const list = document.getElementById("todoList");
+            updateStats(todos);
+
             if (todos.length === 0) {
-                list.innerHTML = '<p class="empty">Henüz görev yok.</p>';
+                list.innerHTML = '<div class="empty">Henuz gorev yok. Ilk gorevini ekleyerek basla.</div>';
                 return;
             }
+
             list.innerHTML = todos.map(t => `
                 <div class="todo-item">
                     <span class="todo-text ${t.done ? 'done' : ''}">${t.text}</span>
                     <span class="time">${t.created_at}</span>
-                    <button class="btn-toggle" onclick="toggle(${t.id})">${t.done ? 'Geri al' : 'Tamamla'}</button>
+                    <button class="btn-toggle" onclick="toggle(${t.id})">${t.done ? 'Geri Al' : 'Tamamla'}</button>
                     <button class="btn-delete" onclick="remove(${t.id})">Sil</button>
                 </div>
             `).join("");
