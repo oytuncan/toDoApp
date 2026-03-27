@@ -1,7 +1,15 @@
+import os
+from pathlib import Path
+
 from flask import Flask, jsonify, request, render_template
 from datetime import datetime
 
-app = Flask(__name__)
+BASE_DIR = Path(__file__).resolve().parent
+app = Flask(
+    __name__,
+    template_folder=str(BASE_DIR / "templates"),
+    static_folder=str(BASE_DIR / "static"),
+)
 
 todos = []
 counter = 1
@@ -49,4 +57,5 @@ def health():
     return jsonify({"status": "healthy"})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", "5000"))
+    app.run(host="0.0.0.0", port=port)
