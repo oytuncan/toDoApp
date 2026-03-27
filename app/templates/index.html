@@ -245,14 +245,18 @@
                 return;
             }
 
-            list.innerHTML = todos.map(t => `
-                <div class="todo-item">
+            const newHTML = todos.map(t => `
+                <div class="todo-item" data-id="${t.id}">
                     <span class="todo-text ${t.done ? 'done' : ''}">${t.text}</span>
                     <span class="time">${t.created_at}</span>
                     <button class="btn-toggle" onclick="toggle(${t.id})">${t.done ? 'Geri Al' : 'Tamamla'}</button>
                     <button class="btn-delete" onclick="remove(${t.id})">Sil</button>
                 </div>
             `).join("");
+
+            if (list.innerHTML !== newHTML) {
+                list.innerHTML = newHTML;
+            }
         }
 
         async function addTodo() {
